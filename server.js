@@ -51,31 +51,6 @@ app.post("/decrypt", async (req, res) => {
     }
 });
 
-app.get("/test-encryption", async (req, res) => {
-    const plaintext = "HelloWorld";
-    const key = "MySecretKey123";
-    
-    try {
-        const encryptedBinary = await encryptVariableLength(plaintext, key, models.encryptionModel);
-        res.json({ plaintext, encryptedBinary });
-    } catch (error) {
-        res.status(500).json({ error: "Encryption failed", details: error.message });
-    }
-});
-
-app.get("/test-decryption", async (req, res) => {
-    const plaintext = "HelloWorld";
-    const key = "MySecretKey123";
-    
-    try {
-        const encryptedBinary = await encryptVariableLength(plaintext, key, models.encryptionModel);
-        const decryptedText = await decryptVariableLength(encryptedBinary, key, models.decryptionModel);
-        res.json({ plaintext, encryptedBinary, decryptedText });
-    } catch (error) {
-        res.status(500).json({ error: "Decryption failed", details: error.message });
-    }
-});
-
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
