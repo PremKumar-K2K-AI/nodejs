@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { loadModel, encryptVariableLength, decryptVariableLength } = require("./encryption_Handler");
+const { loadModel, encryptVariableLength, decryptVariableLength } = require("./encryption_handler");
 
 const app = express();
 app.use(cors());
@@ -8,22 +8,19 @@ app.use(express.json());
 
 let models = {};
 
-// Load the TensorFlow model at startup
 (async () => {
     try {
         models = await loadModel();
-        console.log("✅ Model loaded successfully!");
+        console.log("Model loaded successfully!");
     } catch (error) {
-        console.error("❌ Error loading model:", error);
+        console.error("Error loading model:", error);
     }
 })();
 
-// ** Status Check Route **
 app.get("/status", (req, res) => {
     res.json({ status: "Server is running successfully!" });
 });
 
-// ** Encryption Endpoint **
 app.post("/encrypt", async (req, res) => {
     const { plaintext, key } = req.body;
     if (!plaintext || !key) {
@@ -34,12 +31,11 @@ app.post("/encrypt", async (req, res) => {
         const encryptedBinary = await encryptVariableLength(plaintext, key, models.encryptionModel);
         res.json({ encryptedBinary });
     } catch (error) {
-        console.error("❌ Encryption error:", error);
+        console.error("Encryption error:", error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// ** Decryption Endpoint **
 app.post("/decrypt", async (req, res) => {
     const { encryptedBinary, key } = req.body;
     if (!encryptedBinary || !key) {
@@ -50,12 +46,11 @@ app.post("/decrypt", async (req, res) => {
         const plaintext = await decryptVariableLength(encryptedBinary, key, models.decryptionModel);
         res.json({ plaintext });
     } catch (error) {
-        console.error("❌ Decryption error:", error);
+        console.error("Decryption error:", error);
         res.status(500).json({ error: error.message });
     }
 });
 
-// ** Test Encryption Route **
 app.get("/test-encryption", async (req, res) => {
     const plaintext = "HelloWorld";
     const key = "MySecretKey123";
@@ -68,7 +63,6 @@ app.get("/test-encryption", async (req, res) => {
     }
 });
 
-// ** Test Decryption Route **
 app.get("/test-decryption", async (req, res) => {
     const plaintext = "HelloWorld";
     const key = "MySecretKey123";
@@ -82,8 +76,7 @@ app.get("/test-decryption", async (req, res) => {
     }
 });
 
-// ** Start the Server **
 const PORT = 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
